@@ -39,11 +39,16 @@ public:
 
 		m_observer[message].remove(observer);
 	}
-	void notify() {
+	void notifyAll() {
 		for (observerMap_t::iterator it = m_observer.begin(); it != m_observer.end(); ++it) {
 			for (auto& o : m_observer[it->first]) {
 				o->onNotify();
 			}
+		}
+	}
+	void notify(int message) {
+		for (auto& o : m_observer[message]) {
+			o->onNotify();
 		}
 	}
 
@@ -87,8 +92,9 @@ int main() {
 
 	Watcher watcher1(subject, SomeSubject::PLAYSOUNDS, "watcher1");
 	Watcher watcher2(subject, SomeSubject::PLAYSOUNDS, "watcher2");
-	Watcher watcher3(subject, SomeSubject::PLAYSOUNDS, "watcher3");
+	Watcher watcher3(subject, SomeSubject::HANDLEPHYSICS, "watcher3");
 
-	subject.notify();
+	subject.notify(SomeSubject::HANDLEPHYSICS);
 	
+	subject.removeObserver(SomeSubject::PLAYSOUNDS, &watcher1);
 }
